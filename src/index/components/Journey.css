@@ -16,6 +16,7 @@
   line-height: 40px;
   transition-property: transform;
   transition-duration: 0.3s;
+  cursor: pointer;
 }
 
 .journey-switch-reverse {

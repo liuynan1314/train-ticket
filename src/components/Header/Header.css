@@ -15,6 +15,7 @@
   left: 0;
   width: 42px;
   height: 42px;
+  cursor: pointer;
 }
 .header-title {
   max-width: 216px;

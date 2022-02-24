@@ -54,7 +54,7 @@ export function showCitySelector(currentSelectingLeftCity) {
   };
 }
 
-export function hideCitySelect() {
+export function hideCitySelector() {
   return {
     type: ACTION_SET_IS_CITY_SELECTOR_VISIBLE,
     payload: false
@@ -103,5 +103,24 @@ export function setIsLoadingCityData() {
   return {
     type: ACTION_SET_IS_LOADING_CITY_DATA,
     payload: false
+  };
+}
+
+export function fetchCityData() {
+  return (dispatch, getState) => {
+    const { isLoadingCityData } = getState();
+    if (isLoadingCityData) {
+      return;
+    }
+    dispatch(setIsLoadingCityData(true));
+    fetch("/rest/cities?_" + Date.now())
+      .then(res => res.json())
+      .then(cityData => {
+        dispatch(setCityData(cityData));
+        dispatch(setIsLoadingCityData(false));
+      })
+      .catch(() => {
+        dispatch(setIsLoadingCityData(false));
+      });
   };
 }
