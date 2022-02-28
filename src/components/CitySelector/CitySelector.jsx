@@ -1,17 +1,56 @@
 import React, { useState, useMemo, useEffect } from "react";
+import CityList from "./components/CityList/CityList";
+import Suggest from "./components/Suggest/Suggest";
 import "./CitySelector.css";
 import classnames from "classnames";
+import { useCallback } from "react";
 
 export default function CitySelector(props) {
-  const { visible, onBack, isLoading, cityData, fetchCityData } = props;
+  const {
+    visible,
+    onBack,
+    isLoading,
+    cityData,
+    fetchCityData,
+    onSelect
+  } = props;
   const [searchKey, setSearchKey] = useState("");
   const key = useMemo(() => searchKey.trim(), [searchKey]);
   useEffect(() => {
     if (isLoading || cityData || !visible) {
-      return;
+      return () => setSearchKey("");
     }
     fetchCityData();
+    return () => setSearchKey("");
   }, [isLoading, cityData, visible]);
+
+  const AlphaBate = useCallback(() => {
+    return Array.from(new Array(26), (_, index) =>
+      String.fromCharCode(65 + index)
+    );
+  }, []);
+
+  const outputCitySections = useCallback(() => {
+    if (isLoading) {
+      return <div>loading</div>;
+    }
+
+    if (cityData) {
+      return (
+          <CityList
+          sections={cityData.cityList}
+          onSelect={onSelect}
+          AlphaBate={AlphaBate()}
+          clickToAlpha={toAlpha}
+        />
+      );
+    }
+    return null;
+  }, [isLoading]);
+
+  const toAlpha = useCallback(alpha => {
+    document.querySelector(`[data-cache=${alpha}]`).scrollIntoView(true);
+  }, []);
   return (
       <div className={classnames("city-selector", { hidden: !visible })}>
           <div className="city-search">
@@ -45,6 +84,8 @@ export default function CitySelector(props) {
                   </i>
               </div>
           </div>
+          {outputCitySections()}
+          {key && <Suggest searchKey={key} onSelect={key => onSelect(key)} />}
       </div>
   );
 }

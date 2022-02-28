@@ -28,7 +28,7 @@ function Journey(props) {
           name="to"
           id="to"
           value={to}
-          onClick={() => showCitySelector(true)}
+          onClick={() => showCitySelector(false)}
         />
           </div>
       </div>

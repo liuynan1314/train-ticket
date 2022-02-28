@@ -48,7 +48,7 @@ export function showCitySelector(currentSelectingLeftCity) {
       payload: true
     });
     dispatch({
-      type: ACTION_SET_IS_CITY_SELECTOR_VISIBLE,
+      type: ACTION_SET_CURRENT_SELECTING_LEFT_CITY,
       payload: currentSelectingLeftCity
     });
   };
@@ -75,6 +75,7 @@ export function setSelectedCity(selectedCity) {
         payload: selectedCity
       });
     }
+    dispatch(hideCitySelector());
   };
 }
 
@@ -99,10 +100,10 @@ export function hideDataSelector() {
     payload: false
   };
 }
-export function setIsLoadingCityData() {
+export function setIsLoadingCityData(param) {
   return {
     type: ACTION_SET_IS_LOADING_CITY_DATA,
-    payload: false
+    payload: param
   };
 }
 

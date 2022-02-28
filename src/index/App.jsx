@@ -4,7 +4,8 @@ import {
   exchangeFromTo,
   showCitySelector,
   hideCitySelector,
-  fetchCityData
+  fetchCityData,
+  setSelectedCity
 } from "./actions";
 import DepartDate from "./components/DepartDate.jsx";
 import HighSpeed from "./components/HighSpeed.jsx";
@@ -23,7 +24,8 @@ const App = props => {
     showCitySelector,
     isCitySelectorVisible,
     hideCitySelector,
-    isLoadingCityData
+    isLoadingCityData,
+    setSelectedCity
   } = props;
   const onBack = useCallback(() => {
     window.history.back();
@@ -39,7 +41,8 @@ const App = props => {
   const citySelectorCbs = useMemo(() => {
     return {
       onBack: hideCitySelector,
-      fetchCityData
+      fetchCityData,
+      onSelect: setSelectedCity
     };
   }, []);
 
@@ -78,7 +81,8 @@ export default connect(
       exchangeFromTo: (...args) => dispatch(exchangeFromTo(...args)),
       showCitySelector: (...args) => dispatch(showCitySelector(...args)),
       hideCitySelector: () => dispatch(hideCitySelector()),
-      fetchCityData: () => dispatch(fetchCityData())
+      fetchCityData: () => dispatch(fetchCityData()),
+      setSelectedCity: selectedCity => dispatch(setSelectedCity(selectedCity))
     };
   }
 )(App);
