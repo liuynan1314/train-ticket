@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
+import moment from "moment";
 import {
   exchangeFromTo,
   showCitySelector,
@@ -7,7 +8,9 @@ import {
   fetchCityData,
   setSelectedCity,
   showDataSelector,
-  hideDataSelector
+  hideDataSelector,
+  setDepartDate,
+  toggleHighSpeed
 } from "./actions";
 import DepartDate from "./components/DepartDate.jsx";
 import HighSpeed from "./components/HighSpeed.jsx";
@@ -22,17 +25,20 @@ const App = props => {
     from,
     to,
     cityData,
+    highSpeed,
     fetchCityData,
     exchangeFromTo,
     showCitySelector,
     isCitySelectorVisible,
     hideCitySelector,
     isLoadingCityData,
+    setDepartDate,
     setSelectedCity,
     departDate,
     isDateSelectorVisible,
     showDataSelector,
-    hideDataSelector
+    hideDataSelector,
+    toggleHighSpeed
   } = props;
   const onBack = useCallback(() => {
     window.history.back();
@@ -65,6 +71,21 @@ const App = props => {
     };
   }, []);
 
+  const highSpeedCbs = useMemo(() => {
+    return {
+      toggleSwitch: toggleHighSpeed
+    };
+  }, []);
+
+  const onDateSelect = useCallback(data => {
+    const now = moment().startOf("day");
+    if (now > data) {
+      return;
+    }
+    hideDataSelector();
+    setDepartDate(data);
+  }, []);
+
   return (
       <div>
           <div className="header-wrapper">
@@ -73,15 +94,24 @@ const App = props => {
           <form className="form">
               <Journey from={from} to={to} {...cbs} />
               <DepartDate time={departDate} {...departDateCbs} />
-              <HighSpeed />
+              <HighSpeed highSpeed={highSpeed} {...highSpeedCbs} />
           </form>
+          {isCitySelectorVisible && (
           <CitySelector
-        isLoading={isLoadingCityData}
-        cityData={cityData}
-        visible={isCitySelectorVisible}
-        {...citySelectorCbs}
-      />
-          <DateSelector visible={isDateSelectorVisible} {...dateSelectorCbs} />
+          isLoading={isLoadingCityData}
+          cityData={cityData}
+          visible={isCitySelectorVisible}
+          {...citySelectorCbs}
+        />
+      )}
+          {isDateSelectorVisible && (
+          <DateSelector
+          visible={isDateSelectorVisible}
+          departDate={departDate}
+          {...dateSelectorCbs}
+          onSelect={onDateSelect}
+        />
+      )}
       </div>
   );
 };
@@ -94,7 +124,8 @@ export default connect(
     isLoadingCityData,
     cityData,
     departDate,
-    isDateSelectorVisible
+    isDateSelectorVisible,
+    highSpeed
   }) => {
     return {
       from,
@@ -103,7 +134,8 @@ export default connect(
       isLoadingCityData,
       cityData,
       departDate,
-      isDateSelectorVisible
+      isDateSelectorVisible,
+      highSpeed
     };
   },
   dispatch => {
@@ -114,7 +146,9 @@ export default connect(
       fetchCityData: () => dispatch(fetchCityData()),
       setSelectedCity: selectedCity => dispatch(setSelectedCity(selectedCity)),
       showDataSelector: () => dispatch(showDataSelector()),
-      hideDataSelector: () => dispatch(hideDataSelector())
+      hideDataSelector: () => dispatch(hideDataSelector()),
+      setDepartDate: date => dispatch(setDepartDate(date)),
+      toggleHighSpeed: () => dispatch(toggleHighSpeed())
     };
   }
 )(App);
