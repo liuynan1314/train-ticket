@@ -13,6 +13,7 @@ import {
   toggleHighSpeed
 } from "./actions";
 import DepartDate from "./components/DepartDate.jsx";
+import SubmitButton from "./components/SubmitButton.jsx";
 import HighSpeed from "./components/HighSpeed.jsx";
 import Journey from "./components/Journey.jsx";
 import Header from "../components/Header/Header.jsx";
@@ -91,10 +92,11 @@ const App = props => {
           <div className="header-wrapper">
               <Header onBack={onBack} title="火车票" />
           </div>
-          <form className="form">
+          <form action="/query.html" className="form">
               <Journey from={from} to={to} {...cbs} />
               <DepartDate time={departDate} {...departDateCbs} />
               <HighSpeed highSpeed={highSpeed} {...highSpeedCbs} />
+              <SubmitButton />
           </form>
           {isCitySelectorVisible && (
           <CitySelector
